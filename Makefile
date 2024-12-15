@@ -1,9 +1,9 @@
 CXX ?= c++
-CXXFLAGS ?= -O2 -march=native -pipe
-LDFLAGS ?=
+
+BUILDCXXFLAGS := -Iinclude
 
 # uncomment/comment to enable/disable
-# PROCESS_HEADER_FILES := yes
+PROCESS_HEADER_FILES := yes
 PROCESSED_HEADER_FILES := $(if ${PROCESS_HEADER_FILES},$\
 														$(subst .hpp,$\
 															$(if $(findstring clang,${CXX}),$\
@@ -18,7 +18,7 @@ OBJECT_FILES := $(patsubst src/%.cpp,$\
 MBAR_REQUIREMENTS := ${PROCESSED_HEADER_FILES} ${OBJECT_FILES}
 
 define COMPILE
-${CXX} -c $(1) ${CXXFLAGS} $(shell ./deps/fltk/fltk-config --cxxflags) -o $(2)
+${CXX} -c $(1) ${BUILDCXXFLAGS} $(shell ./deps/fltk/fltk-config --cxxflags) -o $(2)
 
 endef
 define REMOVE
@@ -35,7 +35,7 @@ endef
 all: mbar
 
 mbar: deps/fltk/lib/libfltk.a ${MBAR_REQUIREMENTS}
-	${CXX} ${OBJECT_FILES} ${CXXFLAGS} ${LDFLAGS} $(shell ./deps/fltk/fltk-config --ldflags) -o $@
+	${CXX} ${OBJECT_FILES} ${BUILDCXXFLAGS} ${LDFLAGS} $(shell ./deps/fltk/fltk-config --ldflags) -o $@
 
 build/%.o: src/%.cpp
 	$(call COMPILE,$<,$@)
