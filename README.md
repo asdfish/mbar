@@ -6,6 +6,7 @@ modifiable bar
 git clone https://github.com/asdfish/mbar --depth 1 --recursive
 cd mbar
 sudo make install
+~~~
 
 ## Build errors
 ~~~sh
