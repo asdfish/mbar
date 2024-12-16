@@ -15,10 +15,9 @@ PROCESSED_HEADER_FILES := $(if ${PROCESS_HEADER_FILES},$\
 
 OBJECT_FILES := $(patsubst src/%.cpp,$\
 									build/%.o,$\
-									$(shell find src -name '*.cpp' -type f)) $\
-								build/wlr-layer-shell-unstable.o build/xdg-shell.o
+									$(shell find src -name '*.cpp' -type f))
 
-MBAR_REQUIREMENTS := ${PROCESSED_HEADER_FILES} ${OBJECT_FILES}
+MBAR_REQUIREMENTS := protocols/libwayland_protocols.a ${PROCESSED_HEADER_FILES} ${OBJECT_FILES}
 
 define COMPILE
 ${CXX} -c $(1) ${BUILDCXXFLAGS} $(shell ./deps/fltk/fltk-config --cxxflags) -o $(2)
@@ -29,10 +28,17 @@ $(if $(wildcard $(1)),$\
 	rm $(1))
 
 endef
+define REMOVE_LIBRARY
+$(if $(wildcard $(1)),$\
+	$(MAKE) -C $(dir $(1)) clean)
+
+endef
 define REMOVE_LIST
 $(foreach ITEM,$\
 	$(1),$\
-	$(call REMOVE,${ITEM}))
+	$(if $(findstring .a,${ITEM}),$\
+		$(call REMOVE_LIBRARY,${ITEM}),
+		$(call REMOVE,${ITEM})))
 endef
 
 all: mbar
@@ -46,6 +52,9 @@ build/%.o: src/%.cpp
 	$(call COMPILE,$<,$@)
 %.pch: %
 	$(call COMPILE,$<,$@)
+
+%.a:
+	$(MAKE) -C $(dir $@)
 
 clean:
 	$(call REMOVE_LIST,${MBAR_REQUIREMENTS})
