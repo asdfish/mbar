@@ -3,10 +3,6 @@
 
 #include <bar.hpp>
 
-namespace config {
-
-extern bar::Bar create_bar(void);
-
-};
+extern Bar create_bar(void);
 
 #endif

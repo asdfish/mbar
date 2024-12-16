@@ -1,21 +1,27 @@
 #ifndef BAR_HPP
 #define BAR_HPP
 
-namespace bar {
+#include <result.hpp>
 
-enum Position {
-  POSITION_TOP,
-  POSITION_BOTTOM,
+#include <FL/Fl_Window.H>
+#include <FL/platform.H>
+
+enum BarPosition {
+  BAR_POSITION_TOP,
+  BAR_POSITION_BOTTOM,
 };
 
 class Bar {
 public:
-  Position position = POSITION_TOP;
+  Bar(size_t default_height, BarPosition position);
+  ~Bar(void);
 
-  Bar();
-  Bar(Position position);
-};
+  Result init(int argc, char* argv[]);
 
+private:
+  Fl_Window* window = nullptr;
+  BarPosition position = BAR_POSITION_TOP;
+  size_t default_height = 30;
 };
 
 #endif

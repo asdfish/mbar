@@ -1,6 +1,8 @@
 CXX ?= c++
 
-BUILDCXXFLAGS := -Iinclude
+BUILDCXXFLAGS := -std=c++17 $\
+								 -Iinclude $\
+								 -Wall -Wextra -Wpedantic
 
 # uncomment/comment to enable/disable
 PROCESS_HEADER_FILES := yes
@@ -13,7 +15,8 @@ PROCESSED_HEADER_FILES := $(if ${PROCESS_HEADER_FILES},$\
 
 OBJECT_FILES := $(patsubst src/%.cpp,$\
 									build/%.o,$\
-									$(shell find src -name '*.cpp' -type f))
+									$(shell find src -name '*.cpp' -type f)) $\
+								build/wlr-layer-shell-unstable.o build/xdg-shell.o
 
 MBAR_REQUIREMENTS := ${PROCESSED_HEADER_FILES} ${OBJECT_FILES}
 
@@ -35,7 +38,7 @@ endef
 all: mbar
 
 mbar: deps/fltk/lib/libfltk.a ${MBAR_REQUIREMENTS}
-	${CXX} ${OBJECT_FILES} ${BUILDCXXFLAGS} ${LDFLAGS} $(shell ./deps/fltk/fltk-config --ldflags) -o $@
+	${CXX} ${OBJECT_FILES} ${BUILDCXXFLAGS} $(shell ./deps/fltk/fltk-config --ldflags) -o $@
 
 build/%.o: src/%.cpp
 	$(call COMPILE,$<,$@)

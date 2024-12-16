@@ -1,24 +1,24 @@
+#include <config.hpp>
+#include <result.hpp>
+
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/platform.H>
 
-#include <iostream>
+#define CHECK_RESULT(FUNCTION, RESULT_HOLDER, CLEANUP) \
+  if((RESULT_HOLDER = FUNCTION) != RESULT_OK) {\
+    result_print(RESULT_HOLDER); \
+    goto CLEANUP; \
+  }
 
 int main(int argc, char* argv[]) {
-  Fl_Window window = Fl_Window(10, 10);
+  Result result = RESULT_OK;
 
-  window.show(argc, argv);
-
-  wld_window* window_id = nullptr;
-  if(!(window_id = fl_wl_xid(&window))) {
-    std::cerr << "Failed to get window id\n";
-    return -1;
-  }
-  wl_surface* surface = nullptr;
-  if(!(surface = fl_wl_surface(window_id))) {
-    std::cerr << "Failed to get wayland surface\n";
-    return -2;
-  }
+  Bar bar = create_bar();
+  CHECK_RESULT(bar.init(argc, argv), result, exit);
 
   return Fl::run();
+
+exit:
+  return result;
 }

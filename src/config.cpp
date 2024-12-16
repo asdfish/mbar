@@ -1,5 +1,5 @@
 #include <config.hpp>
 
-bar::Bar create_bar() {
-  return bar::Bar(bar::POSITION_BOTTOM);
+Bar create_bar() {
+  return Bar(30, BAR_POSITION_BOTTOM);
 }
