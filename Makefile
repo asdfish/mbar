@@ -3,6 +3,7 @@ CXX ?= c++
 BUILDCXXFLAGS := -std=c++17 $\
 								 -Iinclude $\
 								 -Wall -Wextra -Wpedantic
+BUILDLDFLAGS := ${BUILDCXXFLAGS} -Lprotocols -lwayland_protocols
 
 # uncomment/comment to enable/disable
 PROCESS_HEADER_FILES := yes
@@ -44,7 +45,7 @@ endef
 all: mbar
 
 mbar: deps/fltk/lib/libfltk.a ${MBAR_REQUIREMENTS}
-	${CXX} ${OBJECT_FILES} ${BUILDCXXFLAGS} $(shell ./deps/fltk/fltk-config --ldflags) -o $@
+	${CXX} ${OBJECT_FILES} ${BUILDLDFLAGS} $(shell ./deps/fltk/fltk-config --ldflags) -o $@
 
 build/%.o: src/%.cpp
 	$(call COMPILE,$<,$@)
